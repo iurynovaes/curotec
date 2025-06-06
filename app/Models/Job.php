@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\ExperienceLevel;
 use App\Enums\JobType;
+use App\Models\JobApplication;
 
 class Job extends Model
 {
@@ -36,5 +37,10 @@ class Job extends Model
     public function location()
     {
         return $this->belongsTo(Location::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
     }
 }

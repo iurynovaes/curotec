@@ -21,8 +21,10 @@ class JobResource extends JsonResource
             'description' => $this->description,
             'experience_level' => $this->experience_level,
             'remote' => $this->remote,
+            'active' => $this->active,
             'category' => $this->category->name ?? null,
             'location' => $this->location->name ?? null,
+            'applications' => $this->applications->count() ?? 0,
             'created_at' => $this->created_at->format('Y-m-d'),
         ];
     }
