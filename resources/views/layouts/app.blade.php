@@ -22,7 +22,10 @@
 
         @include('components.nav')
 
-        <a class="btn-getstarted" href="http://linkedin.com/in/iury-novaes/">LinkedIn</a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn-getstarted" style="border: 0">Logout</button>
+        </form>
 
         </div>
     </header>
@@ -64,6 +67,9 @@
     <script src="{{ asset('assets/vendor/waypoints/noframework.waypoints.js') }}"></script>
     <script src="{{ asset('assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+    <script>
+        var _globalApiToken = '{{env("API_GLOBAL_TOKEN")}}';
+    </script>
 
     @stack('scripts')
 

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\JobApiController;
+use App\Http\Controllers\Api\JobApplicationApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,10 @@ use App\Http\Controllers\Api\JobApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware(['global_api_token'])->group(function () {
 
-Route::get('/jobs', [JobApiController::class, 'list']);
+    Route::prefix('jobs')->group(function () {
+        Route::get('/', [JobApiController::class, 'list']);
+        Route::post('/{job_id}/apply', [JobApplicationApiController::class, 'store']);
+    });
+});
