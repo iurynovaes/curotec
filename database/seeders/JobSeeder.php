@@ -24,7 +24,7 @@ class JobSeeder extends Seeder
         foreach (range(1, 30) as $i) {
 
             $randomCategory = $categories->random();
-            $randomLocation = $categories->random();
+            $randomLocation = $locations->random();
             $title = ucwords($randomCategory->name). ' Opportunity ' . $i;
             $description = "Description of the $title that takes place in $randomLocation->name.";
 
@@ -35,8 +35,8 @@ class JobSeeder extends Seeder
                 'type' => $jobTypes[array_rand(array_keys($jobTypes))],
                 'experience_level' => $experienceLevels[array_rand(array_keys($experienceLevels))],
                 'category_id' => $randomCategory->id,
-                'location_id' => $locations->random()->id,
-                'active' => true,
+                'location_id' => $randomLocation->id,
+                'active' => $i % 2 == 0,
                 'remote' => $i % 2 == 0,
             ]);
         }
