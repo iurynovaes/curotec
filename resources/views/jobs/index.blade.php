@@ -12,11 +12,19 @@
                 <div class="col-md-6">
                     <input type="text" id="title" class="form-control" placeholder="Search by title">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <select id="active" class="form-select">
                         <option value="">All Statuses</option>
                         <option value="1">Active</option>
                         <option value="0">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="order_by" class="form-select">
+                        <option value="created_at_asc">Order By Creation Date (Oldest To Newest)</option>
+                        <option value="created_at_desc">Order By Creation Date (Newest To Oldest)</option>
+                        <option value="title_asc">Order By Job Title (A-Z)</option>
+                        <option value="title_desc">Order By Job Title (Z-A)</option>
                     </select>
                 </div>
             </div>
@@ -75,6 +83,9 @@
         <!-- Pagination -->
         <nav id="pagination" class="mt-4"></nav>
     </div>
+
+    @include('components.job_application_form')
+
 </section>
 @endsection
 
@@ -85,8 +96,10 @@
     }
     .tags {
         display: flex;
-        gap: 5px;
+        justify-content: flex-start;
+        flex-wrap: wrap;
         align-items: center;
+        gap: 5px;
     }
 </style>
 @endpush
@@ -102,6 +115,7 @@
         const experienceLevel = document.getElementById('experience_level').value;
         const active = document.getElementById('active').value;
         const title = document.getElementById('title').value;
+        const orderBy = document.getElementById('order_by').value;
 
         let url = `/api/jobs?page=${page}`;
         if (category) url += `&category_id=${category}`;
@@ -109,9 +123,15 @@
         if (type) url += `&type=${type}`;
         if (title) url += `&title=${title}`;
         if (experienceLevel) url += `&experience_level=${experienceLevel}`;
+        if (orderBy != '') url += `&order_by=${orderBy}`;
         if (active != '') url += `&active=${parseInt(active)}`;
 
-        fetch(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-API-TOKEN': _globalApiToken
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 renderJobs(data.data);
@@ -139,9 +159,15 @@
                         <div class="card-body job-card">
                             <h5>${job.title}</h5>
                             <p>${job.description}</p>
-                            <small><b>Location:</b> ${job.location || '-'}</small><br><br>
+                            <small><b>Location:</b> ${job.location || '-'}</small><br>
+                            <small><b>Candidates:</b> ${job?.applications || '-'}</small><br>
+                            <br>
                             <div class="tags">
                                 ${tags.map(tag => `<small class="badge text-bg-primary">${tag}</small>`).join('')}
+                                ${!job.active ? '<small class="badge text-bg-warning">INACTIVE</small>' : ''}
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button class="btn btn-success w-100" onclick="handleJobApplication(${job.id}, '${job.title}');">Apply now</button>
                             </div>
                         </div>
                     </div>
@@ -197,5 +223,14 @@
     document.addEventListener('DOMContentLoaded', () => {
         fetchJobs();
     });
+
+    function handleJobApplication(jobId, jobTitle) {
+
+        document.getElementById('job_id').value = jobId;
+        document.getElementById('job_title').innerHTML = jobTitle;
+
+        const modal = new bootstrap.Modal(document.getElementById('jobApplicationModal'));
+        modal.show();
+    }
 </script>
 @endpush

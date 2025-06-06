@@ -6,15 +6,31 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JobResource;
 use App\Services\ListJobsService;
+use App\Http\Requests\FilterJobsRequest;
 
 class JobApiController extends Controller
 {
     public function __construct(protected ListJobsService $service) {}
 
-    public function list(Request $request)
+    public function list(FilterJobsRequest $request)
     {
-        $jobs = $this->service->list($request->all());
+        try {
+
+            $filters = $request->validated();
+
+            $jobs = $this->service->handle($filters);
         
-        return JobResource::collection($jobs);
+            return JobResource::collection($jobs);
+
+        } catch (Throwable $th) {
+
+            Log::error($th->getMessage());
+
+            return response()->json([
+                'message' => 'Internal error',
+                'error' => $th->getMessage()
+            ], 500);
+        }
+        
     }
 }
