@@ -114,6 +114,12 @@ Generate the application key:
 php artisan key:generate
 ```
 
+Add the API_GLOBAL_TOKEN value in the .env file:
+
+```bash
+API_GLOBAL_TOKEN="curotec"
+```
+
 4. **Run migrations and seeders**
 
 ```bash
