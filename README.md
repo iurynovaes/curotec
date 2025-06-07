@@ -108,6 +108,17 @@ composer install
 
 3. **Set up environment**
 
+Unix/Linux/macOS
+
+```bash
+cp .env.example .env
+```
+
+Windows
+```bash
+copy .env.example .env
+```
+
 Generate the application key:
 
 ```bash
