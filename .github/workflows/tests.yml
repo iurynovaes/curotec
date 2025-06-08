@@ -40,6 +40,9 @@ jobs:
       - name: Copy environment file
         run: cp .env.example .env
 
+      - name: Copy environment file to testing
+        run: cp .env.testing .env
+
       - name: Generate app key
         run: php artisan key:generate
 
